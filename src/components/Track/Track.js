@@ -1,7 +1,7 @@
 import React from "react";
 import styles from './Track.css';
 
-const Track = ({ name, artist, album, id }) => {
+const Track = ({ name, artist, album, onAdd, onRemove }) => {
 
     return (
         <div className="track">
@@ -10,6 +10,12 @@ const Track = ({ name, artist, album, id }) => {
                 <p className="track-artist">{artist}</p>
                 <p className="track-album">{album}</p>
             </div>
+            <button className="add-button" onClick={onAdd}>
+                +
+            </button>
+            <button className="remove-button" onClick={onRemove}>
+                -
+            </button>
         </div>
     );
 };
