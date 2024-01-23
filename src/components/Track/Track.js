@@ -1,5 +1,5 @@
 import React from "react";
-
+import styles from './Track.css';
 
 const Track = ({ name, artist, album, id }) => {
 
@@ -9,7 +9,6 @@ const Track = ({ name, artist, album, id }) => {
                 <p className="track-name">{name}</p>
                 <p className="track-artist">{artist}</p>
                 <p className="track-album">{album}</p>
-                <p className="track-id">{id}</p>
             </div>
         </div>
     );

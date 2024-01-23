@@ -1,0 +1,13 @@
+.track {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.track-info {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
