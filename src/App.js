@@ -16,6 +16,26 @@ function App() {
     {id: 2, name: 'Track 2', artist: 'Artist 2', album: 'Album 2'},
   ];
 
+  const addTrack = (track) => {
+    const trackExists = playlistInfo.tracks.some((existingTrack) => existingTrack.id === track.id);
+  
+    if(!trackExists) {
+      setPlayListInfo((prevInfo) => ({
+        ...prevInfo,
+        tracks: [...prevInfo.tracks, track]
+      }));
+    }
+
+  };
+
+  const removeTrack = (track) => {
+    const updatedTracks = playlistInfo.tracks.filter((t) => t.id !== track.id);
+    setPlayListInfo((prevInfo) => ({
+      ...prevInfo,
+      tracks: updatedTracks,
+    }));
+  };
+
   const [playlistInfo, setPlayListInfo] = useState({
     title: defaultTitle,
     tracks: defaultTracks,
@@ -27,10 +47,12 @@ function App() {
       <h1>Jammming</h1>
       <header className="App-header">
         <SearchBar />
-        <TrackList tracks={defaultTracks} />
+        <TrackList tracks={defaultTracks} onAdd={addTrack} onRemove={removeTrack}/>
         <PlayList 
           defaultTitle={playlistInfo.title}
           defaultTracks={playlistInfo.tracks}
+          addTrack={addTrack}
+          removeTrack={removeTrack}
         />
       </header>
     </div>

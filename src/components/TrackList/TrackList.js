@@ -11,8 +11,8 @@ const TrackList = ({ tracks, onAdd, onRemove }) => {
                     name={track.name}
                     artist={track.artist}
                     album={track.album}
-                    onAdd={() => onAdd(track)}
-                    onRemove={() => onRemove(track)}
+                    onAdd={onAdd}
+                    onRemove={onRemove}
                 />
             ))}
         </div>
