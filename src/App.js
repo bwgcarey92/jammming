@@ -1,62 +1,73 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React, { useState, useCallback } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar/SearchBar';
 import TrackList from './components/TrackList/TrackList';
 import PlayList from './components/PlayList/PlayList';
-
+import Spotify from './utilities/Spotify';
+import SearchResults from './components/SearchResults/SearchResults';
 
 
 
 
 function App() {
-  const defaultTitle = 'My Playlist';
-  const defaultTracks = [
-    {id: 1, name: 'Track 1', artist: 'Artist 1', album: 'Album 1'},
-    {id: 2, name: 'Track 2', artist: 'Artist 2', album: 'Album 2'},
-  ];
+  const [searchResults, setSearchResults] = useState([]);
+  const [playlistName, setPlaylistName] = useState('New Playlist');
+  const [playlistTracks, setPlaylistTracks] = useState([]);
 
-  const addTrack = (track) => {
-    const trackExists = playlistInfo.tracks.some((existingTrack) => existingTrack.id === track.id);
+  const search = useCallback((term) => {
+    Spotify.search(term).then(setSearchResults);
+  }, []);
+
+  const addTrack = useCallback(
+    (track) => {
+      if (playlistTracks.some((savedTrack) => savedTrack.id === track.id))
+        return;
+
+      setPlaylistTracks((prevTracks) => [...prevTracks, track]);
+    },
+    [playlistTracks]
+  );
+
+  const removeTrack = useCallback((track) => {
+    setPlaylistTracks((prevTracks) =>
+      prevTracks.filter((currentTrack) => currentTrack.id !== track.id)
+    );
+  }, []);
+
+  const updatePlaylistName = useCallback((name) => {
+    setPlaylistName(name);
+  }, []);
+
+  const savePlaylist = useCallback(() => {
+    const trackUris = playlistTracks.map((track) => track.uri);
+    Spotify.savePlaylist(playlistName, trackUris).then(() => {
+      setPlaylistName("New Playlist");
+      setPlaylistTracks([]);
+    });
+  }, [playlistName, playlistTracks]);
   
-    if(!trackExists) {
-      setPlayListInfo((prevInfo) => ({
-        ...prevInfo,
-        tracks: [...prevInfo.tracks, track]
-      }));
-    }
-
-  };
-
-  const removeTrack = (track) => {
-    const updatedTracks = playlistInfo.tracks.filter((t) => t.id !== track.id);
-    setPlayListInfo((prevInfo) => ({
-      ...prevInfo,
-      tracks: updatedTracks,
-    }));
-  };
-
-  const [playlistInfo, setPlayListInfo] = useState({
-    title: defaultTitle,
-    tracks: defaultTracks,
-  });
 
 
   return (
     <div className="App">
       <h1>Jammming</h1>
       <header className="App-header">
-        <SearchBar />
-        <TrackList tracks={defaultTracks} onAdd={addTrack} onRemove={removeTrack}/>
-        <PlayList 
-          defaultTitle={playlistInfo.title}
-          defaultTracks={playlistInfo.tracks}
-          addTrack={addTrack}
-          removeTrack={removeTrack}
-        />
+        <div>
+          <SearchBar onSearch={search} />
+        </div>
+        <div>
+          <SearchResults searchResults={searchResults} onAdd={addTrack} />
+          <PlayList 
+            playlistName={playlistName}
+            playlistTracks={playlistTracks}
+            onNameChange={updatePlaylistName}
+            onRemove={removeTrack}
+            onSave={savePlaylist}
+          />
+        </div>
       </header>
     </div>
   );
-}
+};
 
 export default App;

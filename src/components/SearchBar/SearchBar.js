@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import Spotify from "../../utilities/Spotify";
 import './SearchBar.css'
 
 
 
-const SearchBar = () => {
+const SearchBar = (props) => {
     
-    const [search, setSearch] = useState("");
+    const [term, setTerm] = useState("");
 
-    const handleInputChange = (e) => {
-        setSearch(e.target.value);
-    };
+    const handleInputChange = useCallback((e) => {
+        setTerm(e.target.value);
+    }, []);
 
-    const handleSearch = () => {
-        console.log('Searching', search);
-    };
+    const search = useCallback(() => {
+        props.onSearch(term);
+    }, [props.onSearch, term]);
 
     return (
         <div className="Search-Bar-Container">
             <input 
-            type="text" 
-            placeholder="Search"
-            value={search}
-            onChange={handleInputChange} />
-            <button onClick={handleSearch}>Search</button>
+                placeholder="Enter a song, artist, or album"
+                onChange={handleInputChange} 
+            />
+            <button className="SearchButton" onClick={search}>Search</button>
         </div>
     );
 };

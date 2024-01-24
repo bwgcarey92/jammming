@@ -1,21 +1,45 @@
-import React from "react";
-import styles from './Track.css';
+import React, { useCallback } from "react";
+import './Track.css';
 
-const Track = ({ name, artist, album, onAdd, onRemove }) => {
+const Track = (props) => {
+   const addTrack = useCallback(
+    (e) => {
+        props.onAdd(props.track);
+    }, 
+    [props.onAdd, props.track]
+    );
 
-    return (
-        <div className="track">
-            <div className="track-info">
-                <p className="track-name">{name}</p>
-                <p className="track-artist">{artist}</p>
-                <p className="track-album">{album}</p>
-            </div>
-            <button className="add-button" onClick={onAdd}>
-                +
-            </button>
-            <button className="remove-button" onClick={onRemove}>
+   const removeTrack = useCallback(
+    (e) => {
+        props.onRemove(props.track);
+    },
+    [props.onRemove, props.track]
+   );
+
+   const showDiff = () => {
+    if (props.isRemoval) {
+        return (
+            <button className="Track-Diff" onClick={removeTrack}>
                 -
             </button>
+        );
+    }
+    return (
+        <button className="Track-Diff" onClick={addTrack}>
+            +
+        </button>
+    );
+   }; 
+
+
+    return (
+        <div className="Track">
+            <div className="Track-info">
+                <p className="Track-name">{props.track.name}</p>
+                <p className="Track-artist">{props.track.artist}</p>
+                <p className="Track-album">{props.track.album}</p>
+            </div>
+            {showDiff()}
         </div>
     );
 };
